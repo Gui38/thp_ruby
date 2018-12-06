@@ -142,7 +142,11 @@ until response == "STOP"
 end
 
 puts "----------------------------------------
-on a construit #{command_nb} pyramides,
+on a construit #{command_nb} pyramide#{
+  command_nb == 1 ?
+    "" :
+    "s"
+},
 à bientôt "+"\u2764";
 
 

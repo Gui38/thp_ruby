@@ -4,7 +4,7 @@
 stages = 0
 puts "Salut\ncombien d'étages la pyramide ?"
 
-until stages.between?(1,25)
+until stages.between?(1,25) #voir exercice 20
   print ">>"
   stages = gets.chomp.to_i
   if stages < 1
@@ -16,6 +16,8 @@ until stages.between?(1,25)
   end
 end
 
-for i in 1..stages
+for i in 1..stages #pour chaque etage i
   puts " "*(stages-i)+"#"*i
+  # ecris autant d'espace que le max moins l'étage
+  # puis autant de dièse que l'étage
 end

@@ -6,7 +6,10 @@ puts "------------BONJOUR--------------"
 
 
 # etages _______________________________________
-def askHighness
+#fonction qui demande le nombre d'étages
+#tant qu'il n'a pas un nombre correct
+#entre 3 et 25 car 2 ou 1 c'est nul
+def askheight
   puts "combien d'étages la pyramide ?"
 
   floors = 0
@@ -26,11 +29,17 @@ def askHighness
   return floors
 end
 
-# parametres de pyramide _________________________
-def scale (floor)
-  return 1+2*(floor-1)
-end
+# styles de pyramide _________________________
+# j'ai trois styles de pyramides
+# chacun stocké dans une fonction différente
 
+# mes petites habitudes de javascript :
+# au lieu de faire un gros if elsif
+# j'ai fait un hash et j'ai trouvé comment stocker
+# mes fonctions dedans (c'était pas gagné)
+# comme ca pour demander la bonne fonction
+# je n'aurais plus qu'a faire
+# $styles[nomDeLaBonneFonction].(argument)
 $styles = {}
 
 # escalier -----------------------------------
@@ -42,34 +51,39 @@ $styles["escalier"] = -> (stages){
 
 # pyramide moche ------------------------------
 $styles["moche"] = -> (stages){
-  base = scale stages
   for i in 1..stages
-    body = scale i
-    spacing = base/2 - body/2 # voir *
+    body = 2*i - 1
+    spacing = stages - body/2
     puts " "*spacing+"#"*body
   end
 }
 
 # pyramide stylée ------------------------------
 $styles["stylée"] = -> (stages){
-  base = scale stages
+  base = stages*2 + 1
   bonus = "\u2600"
   puts " "*(base*4/5)+bonus.encode('utf-8')
+  #trouvé sur le net
+  #apparemment sur ruby aujourd'hui
+  #y'a plus besoin d'encoder, c'est utf-8 de base
   for i in 1..stages
-    body = scale i
-    spacingIn = body/2 # voir *
-    spacingOut = base/2 - spacingIn #voir *
-    puts " "*spacingOut+
+    semibody = i -1
+    sky = stages - semibody
+    puts " "*sky+
       "/"+
-      "/"*(spacingIn)+
+      "/"*(semibody)+
       "|"+
-      " "*(spacingIn)+
+      " "*(semibody)+
       "\\";
   end
 }
 
 
 # choix du style _________________________________
+# fonction qui demande le style
+# et qui redemande tant que ce n'est pas
+# un style valide "escalier" "moche" ou "stylée"
+
 def askStyle
   puts "\nj'ai des pyramides stylées,\ndes moches"+
     " et de bêtes escaliers,\nil vous faut quoi ?"
@@ -88,23 +102,27 @@ def askStyle
 end
 
 # construction ______________________________________
-
+#fonction qui demande la hauteur,
+#demande le style
+#puis dessine la bonne pyramide
 def buildPyramid (command_nb)
-  highness = askHighness
+  height = askheight
   style = askStyle
-  #do the drawing
-  $styles[style].(highness)
+  $styles[style].(height) #voila mon tour de magie avec le hash
   puts "et voila la #{command_nb}e commande!"
 end
 
 # confirmation _______________________________________
-
+# fonction qui demande
+# si on veut faire une pyramide
+# et qui redemande tant que la reponse
+# n'est pas "oui" ou "non"
 def ask (command_nb)
   puts "vous voulez contruire #{
-    command_nb==0 ?
-      "quelquechose" :
-      "autre chose"
-    } ?";
+    command_nb==0 ?  #si c'est la premiere commande
+      "quelquechose" : #on demande quelque chose
+      "autre chose" #sinon on demande autre chose
+    } ?"; #j'aime les ternaires =)
   stop = false
   while stop == false
     print ">>"
@@ -123,13 +141,14 @@ end
 
 
 # enfin, le programme _______________________________
+#j'assemble toutes mes fonctions
 
 puts "Bienvenue chez pyramides & escaliers"
 
-command_nb = 0
+command_nb = 0 #pour compter les commandes
 
-response = "go"
-until response == "STOP"
+response = "oui"
+while response == "oui" #tant qu'on veut faire des pyramides
   puts ""
   response = ask(command_nb)
   puts ""
@@ -137,15 +156,16 @@ until response == "STOP"
     command_nb += 1
     buildPyramid(command_nb)
   else
-    response = "STOP" #juste au cas ou
+    response = "non" #juste au cas ou
+    #je me mefie des whiles
   end
 end
 
 puts "----------------------------------------
 on a construit #{command_nb} pyramide#{
   command_nb == 1 ?
-    "" :
-    "s"
+    "" : # 1 pyramide
+    "s"  # 0 ou 2 pyramides
 },
 à bientôt "+"\u2764";
 
